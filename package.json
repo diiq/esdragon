@@ -1,0 +1,39 @@
+{
+  "name": "esdragon",
+  "version": "1.0.0",
+  "description": "React drag and drop that works with touch and mouse.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diiq/esdragon.git"
+  },
+  "keywords": [
+    "react",
+    "drag",
+    "drop",
+    "mouse",
+    "touch",
+    "mobile"
+  ],
+  "author": "Sam Bleckley (sam@sambleckley.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diiq/esdragon/issues"
+  },
+  "homepage": "https://github.com/diiq/esdragon#readme",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^16"
+  },
+  "devDependencies": {
+    "@types/prop-types": "^15.5.5",
+    "@types/react": "^16.4.10",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.2",
+    "typescript": "^3.0.1"
+  }
+}
