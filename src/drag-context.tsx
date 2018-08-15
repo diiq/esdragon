@@ -52,23 +52,19 @@ export interface DragManager {
   removeActor(id: string, props: Actor): void
 }
 
-export const defaultProps = {
-  xScroller: () => document.documentElement,
-  yScroller: () => document.documentElement
-}
-
-export type FullDragContextProps = typeof defaultProps & DragContextProps;
-
 export type DragEvent = React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement> | TouchEvent | MouseEvent;
 
-export class DragContext extends React.Component<FullDragContextProps, {}> {
+export class DragContext extends React.Component<DragContextProps, {}> {
   static childContextTypes: { dragManagers: React.Requireable<object> }  = {
     dragManagers: object
   }
   static contextTypes: { dragManagers: React.Requireable<object> }  = {
     dragManagers: object
   }
-  static defaultProps = defaultProps
+  static defaultProps = {
+    xScroller: () => document.documentElement,
+    yScroller: () => document.documentElement
+  }
 
   state: {
     dragee?: () => JSX.Element,
@@ -122,6 +118,7 @@ export class DragContext extends React.Component<FullDragContextProps, {}> {
   }
 
   componentDidUpdate() {
+    if (!this.props.xScroller || !this.props.yScroller) return;
     const scroller = perimeterScroller(this.props.xScroller(), this.props.yScroller());
     this.actors["_scroller"] = {
       fastUpdate: scroller.scroll,
@@ -213,7 +210,7 @@ export class DragContext extends React.Component<FullDragContextProps, {}> {
   }
 
   richPosition(e: DragEvent) {
-    if (!this.dragee) return; // Could be an assertion instead, TBH
+    if (!this.dragee || !this.props.yScroller || !this.props.xScroller) return; // Could be an assertion instead, TBH
     const drageeSize = this.dragee.getBoundingClientRect();
     const pos = this.getEventPosition(e);
     const scrollTop = this.props.yScroller().scrollTop

@@ -26,10 +26,6 @@ define(["require", "exports", "react", "prop-types", "./utils"], function (requi
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     ;
-    exports.defaultProps = {
-        xScroller: function () { return document.documentElement; },
-        yScroller: function () { return document.documentElement; }
-    };
     var DragContext = /** @class */ (function (_super) {
         __extends(DragContext, _super);
         function DragContext() {
@@ -134,6 +130,8 @@ define(["require", "exports", "react", "prop-types", "./utils"], function (requi
             return { dragManagers: dragManagers };
         };
         DragContext.prototype.componentDidUpdate = function () {
+            if (!this.props.xScroller || !this.props.yScroller)
+                return;
             var scroller = utils_1.perimeterScroller(this.props.xScroller(), this.props.yScroller());
             this.actors["_scroller"] = {
                 fastUpdate: scroller.scroll,
@@ -159,7 +157,7 @@ define(["require", "exports", "react", "prop-types", "./utils"], function (requi
             return Object.keys(this.actors).map(function (key) { return _this.actors[key]; });
         };
         DragContext.prototype.richPosition = function (e) {
-            if (!this.dragee)
+            if (!this.dragee || !this.props.yScroller || !this.props.xScroller)
                 return; // Could be an assertion instead, TBH
             var drageeSize = this.dragee.getBoundingClientRect();
             var pos = this.getEventPosition(e);
@@ -236,7 +234,10 @@ define(["require", "exports", "react", "prop-types", "./utils"], function (requi
         DragContext.contextTypes = {
             dragManagers: prop_types_1.object
         };
-        DragContext.defaultProps = exports.defaultProps;
+        DragContext.defaultProps = {
+            xScroller: function () { return document.documentElement; },
+            yScroller: function () { return document.documentElement; }
+        };
         return DragContext;
     }(React.Component));
     exports.DragContext = DragContext;

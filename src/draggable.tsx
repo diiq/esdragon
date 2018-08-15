@@ -12,8 +12,8 @@ export interface DraggableProps {
   contextName: string
   monitor: any
   style?: {}
-  touchStrategy: "waitForMotion" | "waitForTime" | "instant"
-  mouseStrategy: "waitForMotion" | "waitForTime" | "instant"
+  touchStrategy?: "waitForMotion" | "waitForTime" | "instant"
+  mouseStrategy?: "waitForMotion" | "waitForTime" | "instant"
   timeThresholdMs?: number
   motionThresholdPx?: number
   dragRender?: () => JSX.Element
@@ -24,6 +24,10 @@ export interface DraggableProps {
 export class Draggable extends React.Component<DraggableProps, {}> {
   static contextTypes: { dragManagers: React.Requireable<object> }  = {
     dragManagers: object
+  }
+  static defaultProps = {
+    touchStrategy: "waitForTime",
+    mouseStrategy: "instant"
   }
   ref: HTMLDivElement | null = null
   // True if a drag event has possibly started, but we have to wait through a delay to be sure.
@@ -183,7 +187,7 @@ export class Draggable extends React.Component<DraggableProps, {}> {
 
   setRef = (r: HTMLDivElement) => {
     this.ref = r;
-    if (!r) return;
+    if (!r || !this.props.touchStrategy) return;
     const touchStrategy = this.strategies[this.props.touchStrategy];
     // We have to set touchstart and touchmove event handlers here, because they
     // must be made non-passive in order to preventDefault(); and react is
@@ -194,6 +198,7 @@ export class Draggable extends React.Component<DraggableProps, {}> {
   }
 
   render() {
+    if (!this.props.mouseStrategy) return;
     if (this.props.disabled) {
       return <div style={{...this.props.style, ...style.wrapper}}>
         {this.props.children}
@@ -207,7 +212,6 @@ export class Draggable extends React.Component<DraggableProps, {}> {
         onMouseMove={mouseStrategy.move}
         onMouseUp={this.onPointerUp}
         onTouchEnd={this.onPointerUp}
-        {...style.wrapper}
         style={{...this.props.style, ...style.wrapper}}>
         {this.props.children}
       </div>

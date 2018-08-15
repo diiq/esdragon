@@ -37,13 +37,8 @@ export interface DragManager {
     drop(e: DragEvent): void;
     removeActor(id: string, props: Actor): void;
 }
-export declare const defaultProps: {
-    xScroller: () => HTMLElement;
-    yScroller: () => HTMLElement;
-};
-export declare type FullDragContextProps = typeof defaultProps & DragContextProps;
 export declare type DragEvent = React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement> | TouchEvent | MouseEvent;
-export declare class DragContext extends React.Component<FullDragContextProps, {}> {
+export declare class DragContext extends React.Component<DragContextProps, {}> {
     static childContextTypes: {
         dragManagers: React.Requireable<object>;
     };
