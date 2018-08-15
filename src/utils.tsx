@@ -14,7 +14,7 @@ export function fastMove(ref: HTMLElement, loc: { x: number, y: number }) {
   ref.style[`${vendorPrefix}Transform`] = `translate3d(${loc.x}px,${loc.y}px, 0)`;
 }
 
-interface Scrollable {
+export interface Scrollable {
   scrollLeft: number
   scrollTop: number
   clientHeight: number

@@ -22,7 +22,7 @@ export interface DraggableProps {
 };
 
 export class Draggable extends React.Component<DraggableProps, {}> {
-  static contextTypes = {
+  static contextTypes: { dragManagers: React.Requireable<object> }  = {
     dragManagers: object
   }
   ref: HTMLDivElement | null = null

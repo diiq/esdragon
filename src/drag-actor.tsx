@@ -19,7 +19,7 @@ export interface DragActorProps {
 };
 
 export class DragActor extends React.Component<DragActorProps, {}> {
-  static contextTypes = {
+  static contextTypes: { dragManagers: React.Requireable<object> } = {
     dragManagers: object
   }
   actor: Actor | null = null

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "target": "es5",
     "module": "amd",
     "strict": true,
@@ -15,6 +15,6 @@
     "baseUrl": "./src",
     "sourceRoot": "./src",
     "noUnusedLocals": true,
-    "outFile": "./dist/index.js",
+    "outDir": "./dist"
   }
 }
