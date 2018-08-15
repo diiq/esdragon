@@ -113,3 +113,7 @@ Scroll containers are declared in the form of a function that returns the contai
 ## Example usage
 
 See [my interactive talk](https://github.com/diiq/drag-and-drop-talk) about drag and drop for the web.
+
+See [my Lch color picker](https://palette.sambleckley.com) for a live demo.
+
+See [Vistimo](https://vistimo.com) for a rich and complicated use-case.
