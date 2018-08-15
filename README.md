@@ -116,4 +116,4 @@ See [my interactive talk](https://github.com/diiq/drag-and-drop-talk) about drag
 
 See [my Lch color picker](https://palette.sambleckley.com) for a live demo.
 
-See [Vistimo](https://vistimo.com) for a rich and complicated use-case.
+See [Vistimo](https://www.vistimo.com) for a rich and complicated use-case.
