@@ -1,28 +1,22 @@
-//
-// for each droppable, give Location => FastUpdate (move over/get bigger if needed) and Location => DropUpdate
-// for each draggable predrag fastupdate (if mobile aimate drag icon), startdrag fastupdate (hide it!), drag renderer (to be put in an transformed box)
-// scrollbucket -> dimensions. dimensions
-
-import * as React from 'react';
-import { object } from 'prop-types';
-import { DragManager, DragLocation, Actor } from './drag-context';
-
+import * as React from "react";
+import { object } from "prop-types";
+import { DragManager, DragLocation, Actor } from "./drag-context";
 
 export interface DragActorProps {
-  contextName: string
-  id: any
-  fastUpdate?: (location: DragLocation, monitor: any) => void
-  dragStop?: (monitor?: any, position?: DragLocation) => void
-  dragStart?: (monitor: any) => void
-  style?: any
-  setRef?: (ref: HTMLDivElement) => void
-};
+  contextName: string;
+  id: any;
+  fastUpdate?: (location: DragLocation, monitor: any) => void;
+  dragStop?: (monitor?: any, position?: DragLocation) => void;
+  dragStart?: (monitor: any) => void;
+  style?: any;
+  setRef?: (ref: HTMLDivElement) => void;
+}
 
 export class DragActor extends React.Component<DragActorProps, {}> {
   static contextTypes: { dragManagers: React.Requireable<object> } = {
     dragManagers: object
-  }
-  actor: Actor | null = null
+  };
+  actor: Actor | null = null;
 
   manager() {
     return this.context.dragManagers[this.props.contextName] as DragManager;
@@ -53,8 +47,10 @@ export class DragActor extends React.Component<DragActorProps, {}> {
   }
 
   render() {
-    return <div style={this.props.style} ref={this.props.setRef}>
-      {this.props.children}
-    </div>
+    return (
+      <div style={this.props.style} ref={this.props.setRef}>
+        {this.props.children}
+      </div>
+    );
   }
 }

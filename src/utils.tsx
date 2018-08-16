@@ -1,32 +1,40 @@
 export const vendorPrefix = (function() {
-  const styles = window.getComputedStyle(document.documentElement, '')
-  const pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/))[1];
+  const styles = window.getComputedStyle(document.documentElement, "");
+  const pre = Array.prototype.slice
+    .call(styles)
+    .join("")
+    .match(/-(moz|webkit|ms)-/)[1];
 
   switch (pre) {
-    case 'ms':
-      return 'ms';
+    case "ms":
+      return "ms";
     default:
-      return pre && pre.length ? pre[0].toUpperCase() + pre.substr(1) : '';
+      return pre && pre.length ? pre[0].toUpperCase() + pre.substr(1) : "";
   }
 })();
 
-export function fastMove(ref: HTMLElement, loc: { x: number, y: number }) {
-  ref.style[`${vendorPrefix}Transform`] = `translate3d(${loc.x}px,${loc.y}px, 0)`;
+export function fastMove(ref: HTMLElement, loc: { x: number; y: number }) {
+  ref.style[`${vendorPrefix}Transform`] = `translate3d(${loc.x}px,${
+    loc.y
+  }px, 0)`;
 }
 
 export interface Scrollable {
-  scrollLeft: number
-  scrollTop: number
-  clientHeight: number
-  clientWidth: number
+  scrollLeft: number;
+  scrollTop: number;
+  clientHeight: number;
+  clientWidth: number;
 }
 
 export interface Scroller {
-  scroll(loc: { unscrolled: {x: number, y: number }}): void
-  stop(): void
+  scroll(loc: { unscrolled: { x: number; y: number } }): void;
+  stop(): void;
 }
 
-export function perimeterScroller(xScrollable: Scrollable, yScrollable: Scrollable): Scroller {
+export function perimeterScroller(
+  xScrollable: Scrollable,
+  yScrollable: Scrollable
+): Scroller {
   var autoscrollInterval: number | null = null;
   function stop() {
     if (autoscrollInterval) {
@@ -38,7 +46,7 @@ export function perimeterScroller(xScrollable: Scrollable, yScrollable: Scrollab
 
   return {
     // TODO rewrite this to look more like Timeline scroller
-    scroll(loc: { unscrolled: {x: number, y: number }}) {
+    scroll(loc: { unscrolled: { x: number; y: number } }) {
       // Safety valve; if things go borken, we don't want the page stuck in
       // permascroll hell.
       // This is probably hiding a bug on mobile.
@@ -55,8 +63,12 @@ export function perimeterScroller(xScrollable: Scrollable, yScrollable: Scrollab
         return 0;
       }
 
-      const dy = speedGivenLocation(yScrollable.clientHeight - y) || -speedGivenLocation(y);
-      const dx = speedGivenLocation(xScrollable.clientWidth - x) || -speedGivenLocation(x);
+      const dy =
+        speedGivenLocation(yScrollable.clientHeight - y) ||
+        -speedGivenLocation(y);
+      const dx =
+        speedGivenLocation(xScrollable.clientWidth - x) ||
+        -speedGivenLocation(x);
 
       if (autoscrollInterval) {
         clearInterval(autoscrollInterval as number);
@@ -68,7 +80,7 @@ export function perimeterScroller(xScrollable: Scrollable, yScrollable: Scrollab
           if (!isNaN(dx)) xScrollable.scrollLeft += dx;
           if (!isNaN(dy)) yScrollable.scrollTop += dy;
         }, 5);
-      };
+      }
     },
 
     stop: stop
@@ -91,7 +103,7 @@ export function framerateLoop<T>(items: T[], fn: (o: T) => void) {
     } else {
       ret.done = true;
     }
-  }
+  };
   requestAnimationFrame(loop);
   return ret;
 }

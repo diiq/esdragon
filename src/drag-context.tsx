@@ -1,85 +1,90 @@
-import * as React from 'react';
-import { object } from 'prop-types';
-import { fastMove, perimeterScroller, framerateLoop } from './utils';
-
+import * as React from "react";
+import { object } from "prop-types";
+import { fastMove, perimeterScroller, framerateLoop } from "./utils";
 
 export interface DragContextProps {
-  contextName: string
+  contextName: string;
   // Scroll something other than body when dragging to edges of screen?
-  xScroller?: () => Element
-  yScroller?: () => Element
-  style?: any
-};
+  xScroller?: () => Element;
+  yScroller?: () => Element;
+  style?: any;
+}
 
 export interface DragLocation {
   centroid: {
-    x: number,
-    y: number,
-  },
+    x: number;
+    y: number;
+  };
   topLeft: {
-    x: number,
-    y: number,
-  },
+    x: number;
+    y: number;
+  };
   mouse: {
-    x: number,
-    y: number
-  },
+    x: number;
+    y: number;
+  };
   unscrolled: {
-    x: number,
-    y: number
-  }
+    x: number;
+    y: number;
+  };
 }
 
 export interface Actor {
-  dragStart?: (monitor: any) => void,
-  fastUpdate?: (location: DragLocation, monitor: any) => void,
-  dragStop?: (monitor: any) => void
+  dragStart?: (monitor: any) => void;
+  fastUpdate?: (location: DragLocation, monitor: any) => void;
+  dragStop?: (monitor: any) => void;
 }
 
 // This is what gets passed around in Context to connect all the DragActors to
 // event callbacks.
 export interface DragManager {
-  addActor(id: string, props: Actor): void
-  maybeStart(e: DragEvent): void
-  cancelStart(): void
-  start(e: DragEvent,
+  addActor(id: string, props: Actor): void;
+  maybeStart(e: DragEvent): void;
+  cancelStart(): void;
+  start(
+    e: DragEvent,
     ref: HTMLDivElement,
     render: () => JSX.Element,
     monitor: any,
-    onDrop?: (monitor: any) => void): void
-  move(e: DragEvent): void
-  drop(e: DragEvent): void
-  removeActor(id: string, props: Actor): void
+    onDrop?: (monitor: any) => void
+  ): void;
+  move(e: DragEvent): void;
+  drop(e: DragEvent): void;
+  removeActor(id: string, props: Actor): void;
 }
 
-export type DragEvent = React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement> | TouchEvent | MouseEvent;
+export type DragEvent =
+  | React.MouseEvent<HTMLDivElement>
+  | React.TouchEvent<HTMLDivElement>
+  | TouchEvent
+  | MouseEvent;
 
 export class DragContext extends React.Component<DragContextProps, {}> {
-  static childContextTypes: { dragManagers: React.Requireable<object> }  = {
+  static childContextTypes: { dragManagers: React.Requireable<object> } = {
     dragManagers: object
-  }
-  static contextTypes: { dragManagers: React.Requireable<object> }  = {
+  };
+  static contextTypes: { dragManagers: React.Requireable<object> } = {
     dragManagers: object
-  }
+  };
   static defaultProps = {
     xScroller: () => document.documentElement,
     yScroller: () => document.documentElement
-  }
+  };
 
   state: {
-    dragee?: () => JSX.Element,
-    maybeStarting?: boolean
-  } = {}
+    dragee?: () => JSX.Element;
+    maybeStarting?: boolean;
+  } = {};
 
-  manager: DragManager | null = null
-  actors: { [key: string]: Actor } = {}
-  dragee: HTMLDivElement | null = null
-  hiddenDragee: HTMLDivElement | null = null
-  pointerOffset = { x: 0, y: 0 }
-  oldDisplay: string | null = null
-  monitor: any = {}
-  dragStart = { done: false }
-  onDrop: ((m: any) => void) | null = null
+  manager: DragManager | null = null;
+  actors: { [key: string]: Actor } = {};
+  dragee: HTMLDivElement | null = null;
+  hiddenDragee: HTMLDivElement | null = null;
+  pointerOffset = { x: 0, y: 0 };
+  oldDisplay: string | null = null;
+  monitor: any = {};
+  dragStart = { done: false };
+  onDrop: ((m: any) => void) | null = null;
 
   handlePreventTouchmoveWhenPanning = (event: any) => {
     if (this.state.dragee) {
@@ -87,20 +92,28 @@ export class DragContext extends React.Component<DragContextProps, {}> {
     }
   };
 
-  componentDidMount () {
-    (window.document.body.addEventListener as any)('touchmove', this.handlePreventTouchmoveWhenPanning, {
-      passive: false
-    });
+  componentDidMount() {
+    (window.document.body.addEventListener as any)(
+      "touchmove",
+      this.handlePreventTouchmoveWhenPanning,
+      {
+        passive: false
+      }
+    );
   }
 
-  componentWillUnmount () {
-    (window.document.body.removeEventListener as any)('touchmove', this.handlePreventTouchmoveWhenPanning, {
-      passive: false
-    });
+  componentWillUnmount() {
+    (window.document.body.removeEventListener as any)(
+      "touchmove",
+      this.handlePreventTouchmoveWhenPanning,
+      {
+        passive: false
+      }
+    );
   }
 
   otherManagers() {
-    return this.context.dragManagers || {}
+    return this.context.dragManagers || {};
   }
 
   getChildContext() {
@@ -119,31 +132,35 @@ export class DragContext extends React.Component<DragContextProps, {}> {
 
   componentDidUpdate() {
     if (!this.props.xScroller || !this.props.yScroller) return;
-    const scroller = perimeterScroller(this.props.xScroller(), this.props.yScroller());
+    const scroller = perimeterScroller(
+      this.props.xScroller(),
+      this.props.yScroller()
+    );
     this.actors["_scroller"] = {
       fastUpdate: scroller.scroll,
       dragStart: scroller.stop
-    }
+    };
   }
 
   addActor = (id: string, props: Actor) => {
     this.actors[id] = props;
-  }
+  };
 
   removeActor = (id: string, actor: Actor) => {
     if (this.actors[id] != actor) return;
     delete this.actors[id];
-  }
+  };
 
   maybeStart = (e: DragEvent) => {
     this.setState({ maybeStart: true });
-  }
+  };
 
   cancelStart = () => {
     this.setState({ maybeStart: false });
-  }
+  };
 
-  start = (e: DragEvent,
+  start = (
+    e: DragEvent,
     ref: HTMLDivElement,
     dragRenderer: () => JSX.Element,
     monitor: any,
@@ -164,12 +181,15 @@ export class DragContext extends React.Component<DragContextProps, {}> {
     this.hiddenDragee.style.display = "none";
 
     // Tell all the actors we're starting
-    this.dragStart = framerateLoop(this.actorsArray(), (a: Actor) => a.dragStart && a.dragStart(this.monitor));
+    this.dragStart = framerateLoop(
+      this.actorsArray(),
+      (a: Actor) => a.dragStart && a.dragStart(this.monitor)
+    );
 
     // Don't do anything else.
     e.stopPropagation();
     e.preventDefault();
-  }
+  };
 
   move = (e: DragEvent) => {
     if (!this.state.dragee) return;
@@ -179,16 +199,16 @@ export class DragContext extends React.Component<DragContextProps, {}> {
     }
     e.stopPropagation();
     e.preventDefault();
-  }
+  };
 
   drop = (e: DragEvent) => {
     this.setState({ dragee: null });
     if (!this.hiddenDragee) return;
     this.hiddenDragee.style.display = this.oldDisplay;
-    this.actorsDo('dragStop', [this.monitor, this.richPosition(e)]);
+    this.actorsDo("dragStop", [this.monitor, this.richPosition(e)]);
     if (this.onDrop) this.onDrop(this.monitor);
     this.monitor = null;
-  }
+  };
 
   actorsDo(action: string, args: any[]) {
     Object.keys(this.actors).forEach(actorId => {
@@ -200,7 +220,7 @@ export class DragContext extends React.Component<DragContextProps, {}> {
 
   actActors(e: DragEvent) {
     const position = this.richPosition(e);
-    this.actorsDo('fastUpdate', [position, this.monitor]);
+    this.actorsDo("fastUpdate", [position, this.monitor]);
   }
 
   // Helpers
@@ -213,16 +233,16 @@ export class DragContext extends React.Component<DragContextProps, {}> {
     if (!this.dragee || !this.props.yScroller || !this.props.xScroller) return; // Could be an assertion instead, TBH
     const drageeSize = this.dragee.getBoundingClientRect();
     const pos = this.getEventPosition(e);
-    const scrollTop = this.props.yScroller().scrollTop
-    const scrollLeft = this.props.xScroller().scrollLeft
+    const scrollTop = this.props.yScroller().scrollTop;
+    const scrollLeft = this.props.xScroller().scrollLeft;
     return {
       centroid: {
         x: pos.x + this.pointerOffset.x + drageeSize.width / 2 + scrollLeft,
-        y: pos.y + this.pointerOffset.y + drageeSize.height / 2 + scrollTop,
+        y: pos.y + this.pointerOffset.y + drageeSize.height / 2 + scrollTop
       },
       topLeft: {
         x: pos.x + this.pointerOffset.x + scrollLeft,
-        y: pos.y + this.pointerOffset.y + scrollTop,
+        y: pos.y + this.pointerOffset.y + scrollTop
       },
       mouse: {
         x: pos.x + scrollLeft,
@@ -232,19 +252,19 @@ export class DragContext extends React.Component<DragContextProps, {}> {
         x: pos.x,
         y: pos.y
       }
-    }
+    };
   }
 
   isTouch(e: DragEvent): e is React.TouchEvent<any> | TouchEvent {
-    return !!e['touches'];
+    return !!e["touches"];
   }
 
-  previousPos = {x: 0, y: 0}
+  previousPos = { x: 0, y: 0 };
   getEventPosition(e: DragEvent) {
     var pos;
     if (this.isTouch(e)) {
       if (e.touches[0]) {
-        pos = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        pos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       } else {
         pos = this.previousPos;
       }
@@ -269,49 +289,56 @@ export class DragContext extends React.Component<DragContextProps, {}> {
     this.pointerOffset = {
       x: drageeLoc.left - pos.x,
       y: drageeLoc.top - pos.y
-    }
+    };
   }
 
   setDragee = (r: HTMLDivElement) => {
     this.dragee = r;
-  }
+  };
 
   render() {
     return (
       <div style={this.props.style}>
-        <div onMouseMove={this.move}
-          ref={(r) => {
+        <div
+          onMouseMove={this.move}
+          ref={r => {
             if (!r) return;
-            (r.addEventListener as any)("touchmove", this.move, {passive: false});
+            (r.addEventListener as any)("touchmove", this.move, {
+              passive: false
+            });
           }}
-          onTouchEnd={this.drop} onTouchCancel={this.drop} onMouseUp={this.drop}
-          style={{...style.dragLayer, pointerEvents: this.state.dragee ? 'all' : 'none' }} >
-
+          onTouchEnd={this.drop}
+          onTouchCancel={this.drop}
+          onMouseUp={this.drop}
+          style={{
+            ...style.dragLayer,
+            pointerEvents: this.state.dragee ? "all" : "none"
+          }}
+        >
           <div style={style.dragee} ref={this.setDragee}>
             {this.state.dragee && this.state.dragee()}
           </div>
         </div>
         {this.props.children}
-
       </div>
     );
   }
 }
 
-let style : {[klass: string]: React.CSSProperties} = {
+let style: { [klass: string]: React.CSSProperties } = {
   dragLayer: {
-    position: 'fixed',
+    position: "fixed",
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
-    zIndex: 10000,
+    zIndex: 10000
   },
   dragee: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
-    userSelect: 'none',
-    touchCallout: 'none'
+    userSelect: "none",
+    touchCallout: "none"
   } as any
 };
