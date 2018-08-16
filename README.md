@@ -8,9 +8,9 @@ Esdragon is not as easy to use as many other react d-n-d libraries. You should u
 
 ## Installing
 
-`yarn add esdragon` or `npm install estragon`.
+`yarn add esdragon` or `npm install esdragon`.
 
-Esdragon comes with typscript typings; no need to install them separately.
+Esdragon comes with typescript typings; no need to install them separately.
 
 ## Usage
 
