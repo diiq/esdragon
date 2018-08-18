@@ -30,9 +30,11 @@ A `DragContext` is the container in which all draggable object, and all objects 
 ```
 
 ### Optional attributes
-DragContexts may also, optionally, declare what DOM object should be scrolled when draggable items are dragged to the edges of the page. By default, the document body will be scrolled.
+* `xscroller`, `yScroller`: DragContexts may also, optionally, declare what DOM object should be scrolled when draggable items are dragged to the edges of the page. By default, the document body will be scrolled.
 
-Scroll containers are declared in the form of a function that returns the container (in case you don't have a reference to the container when the DragContext is being initialized).
+  Scroll containers are declared in the form of a function that returns the container (in case you don't have a reference to the container when the DragContext is being initialized).
+* `style`: CSS properties
+* `className`: A string of class names.
 
 ```
 <DragContext contextName="myDragContext" 
@@ -58,7 +60,8 @@ Scroll containers are declared in the form of a function that returns the contai
 
 ### Optional attributes
 * `onDrop`: The onDrop callback gets called when the object is dropped; and the draggable's monitor object will be passed in as an argument.
-* `style`: A style object.
+* `style`: A style object (CSSProperties).
+* `className`: A string of class names.
 * `touchStrategy`: must be one of "waitForMotion", "waitForTime", and "instant". "waitForMotion" does not start the drag action until the touch point has moved. "waitForTime" does not start the drag action until the touch point has remained static for a period of time longer than `timeThresholdMs`.  "instant" begins the drag action immediately. "waitForTime" is the default touch strategy, to allow users to scroll the page without accidentally triggering drag actions.
 * `mouseStrategy`: must be one of "waitForMotion", "waitForTime", and "instant". "waitForMotion" does not start the drag action until the depressed mouse has moved. "waitForTime" does not start the drag action until the depressed mouse has remained static for a period of time longer than `timeThresholdMs`.  "instant" begins the drag action immediately. "instant" is the default mouse strategy.
 * `timeThresholdMs`: the delay before starting a drag when the "waitForTime" strategy is used.
@@ -107,7 +110,8 @@ Scroll containers are declared in the form of a function that returns the contai
 
   `fastUpdate` should NOT be used to update React state if you want dragging to remain performant. `fastUpdate` is designed for making GPU-accelerated CSS updates that will complete inside a single animation frame.
 * `dragStop`: a function. Takes a monitor and a location (like fastUpdate, but in the opposite order) and is called when a drag action completes.
-* style: a style object.
+* `style`: a style object.
+* `className`: A string of class names.
 * `setRef`: like `ref`, but with a reference to the DOM object of the actor, rather than the `DragActor` component itself. Useful for getting a client rect for calculating positions and motions relative to the actor during drag actions.
 
 ## Example usage

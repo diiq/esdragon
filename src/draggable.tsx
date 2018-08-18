@@ -10,7 +10,8 @@ import { DragManager, DragEvent } from "./drag-context";
 export interface DraggableProps {
   contextName: string;
   monitor: any;
-  style?: {};
+  style?: React.CSSProperties;
+  className?: string;
   touchStrategy?: "waitForMotion" | "waitForTime" | "instant";
   mouseStrategy?: "waitForMotion" | "waitForTime" | "instant";
   timeThresholdMs?: number;
@@ -198,7 +199,7 @@ export class Draggable extends React.Component<DraggableProps, {}> {
       return this.props.dragRender();
     } else {
       return (
-        <div style={{ ...this.props.style, ...style.wrapper }}>
+        <div style={{ ...this.props.style, ...style.wrapper }} className={this.props.className}>
           {this.props.children}
         </div>
       );
@@ -227,7 +228,7 @@ export class Draggable extends React.Component<DraggableProps, {}> {
     if (!this.props.mouseStrategy) return;
     if (this.props.disabled) {
       return (
-        <div style={{ ...this.props.style, ...style.wrapper }}>
+        <div style={{ ...this.props.style, ...style.wrapper }} className={this.props.className}>
           {this.props.children}
         </div>
       );
@@ -242,6 +243,7 @@ export class Draggable extends React.Component<DraggableProps, {}> {
         onMouseUp={this.onPointerUp}
         onTouchEnd={this.onPointerUp}
         style={{ ...this.props.style, ...style.wrapper }}
+        className={this.props.className}
       >
         {this.props.children}
       </div>

@@ -7,7 +7,8 @@ export interface DragContextProps {
   // Scroll something other than body when dragging to edges of screen?
   xScroller?: () => Element;
   yScroller?: () => Element;
-  style?: any;
+  style?: React.CSSProperties;
+  className: string;
 }
 
 export interface DragLocation {
@@ -298,7 +299,7 @@ export class DragContext extends React.Component<DragContextProps, {}> {
 
   render() {
     return (
-      <div style={this.props.style}>
+      <div style={this.props.style} className={this.props.className}>
         <div
           onMouseMove={this.move}
           ref={r => {

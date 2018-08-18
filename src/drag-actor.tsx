@@ -8,7 +8,8 @@ export interface DragActorProps {
   fastUpdate?: (location: DragLocation, monitor: any) => void;
   dragStop?: (monitor?: any, position?: DragLocation) => void;
   dragStart?: (monitor: any) => void;
-  style?: any;
+  style?: React.CSSProperties;
+  className?: string,
   setRef?: (ref: HTMLDivElement) => void;
 }
 
@@ -48,7 +49,7 @@ export class DragActor extends React.Component<DragActorProps, {}> {
 
   render() {
     return (
-      <div style={this.props.style} ref={this.props.setRef}>
+      <div style={this.props.style} className={this.props.className} ref={this.props.setRef}>
         {this.props.children}
       </div>
     );
