@@ -1,6 +1,6 @@
 {
   "name": "esdragon",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "React drag and drop that works with touch and mouse.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
