@@ -8,7 +8,7 @@ export interface DragContextProps {
   xScroller?: () => Element;
   yScroller?: () => Element;
   style?: React.CSSProperties;
-  className: string;
+  className?: string;
 }
 
 export interface DragLocation {
