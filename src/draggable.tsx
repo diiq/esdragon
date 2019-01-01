@@ -105,7 +105,6 @@ export class Draggable extends React.Component<DraggableProps, {}> {
       move: (e: DragEvent) => {
         if (this.waitingToStartDrag) {
           this.waitingToStartDrag = false;
-          e.preventDefault();
           this.manager().cancelStart();
         } else if (this.currentlyDragging) {
           e.preventDefault();
@@ -254,6 +253,8 @@ export class Draggable extends React.Component<DraggableProps, {}> {
 let style: { [klass: string]: React.CSSProperties } = {
   wrapper: {
     userSelect: "none",
-    touchCallout: "none"
+    touchCallout: "none",
+    WebkitTouchCallout: "none",
+    WebkitUserSelect: "none"
   } as any
 };

@@ -1,9 +1,12 @@
 export const vendorPrefix = (function() {
   const styles = window.getComputedStyle(document.documentElement, "");
-  const pre = Array.prototype.slice
+  const preSlice = Array.prototype.slice
     .call(styles)
     .join("")
-    .match(/-(moz|webkit|ms)-/)[1];
+    .match(/-(moz|webkit|ms)-/)
+  
+  if (!preSlice) return ""
+  const pre = preSlice[1];
 
   switch (pre) {
     case "ms":
